@@ -32,7 +32,7 @@ class Todo {
       'id': id,
       'title': title,
       'DATETIME': dateTime
-          .toIso8601String(), // DateTime ni String ga aylantirish (ISO formatda)
+          .toString(), // DateTime ni String ga aylantirish (ISO formatda)
       'isDone': isDone,
     };
   }
