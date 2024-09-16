@@ -2,27 +2,42 @@ import 'package:dio/dio.dart';
 import 'package:todo_app/model/todo.dart';
 
 // Firebase URL bazasi
-const String firebaseUrl = "https://todo-667d1-default-rtdb.firebaseio.com/todo1";
+const String firebaseUrl =
+    "https://todo-667d1-default-rtdb.firebaseio.com/todo1";
 
 // Dio instansiyasi
 final Dio dio = Dio();
 
 // Firebase'dan ma'lumotlarni olish (READ)
 Future<List<Todo>> getTodos() async {
-  final response = await dio.get("$firebaseUrl.json");
+  try {
+    final response = await dio.get("$firebaseUrl.json");
 
-  final Map<String, dynamic> mapTodos = response.data;
-  List<Todo> todos = [];
+    // Check if response data is not null and is a Map
+    if (response.data != null && response.data is Map<String, dynamic>) {
+      final Map<String, dynamic> mapTodos =
+          Map<String, dynamic>.from(response.data);
+      List<Todo> todos = [];
 
-  // Ma'lumotlarni loop orqali qayta ishlash va Todo obyektiga aylantirish
-  mapTodos.forEach((key, value) {
-    final map = value as Map<String, dynamic>;
-    map['id'] = key; // har bir todo uchun id qo'shish
-    final todo = Todo.fromMap(map);
-    todos.add(todo);
-  });
+      // Loop through mapTodos and convert each entry to a Todo object
+      mapTodos.forEach((key, value) {
+        if (value is Map<String, dynamic>) {
+          final map = Map<String, dynamic>.from(value);
+          map['id'] = key; // Adding 'id' to each todo
+          final todo = Todo.fromMap(map);
+          todos.add(todo);
+        }
+      });
 
-  return todos;
+      return todos;
+    } else {
+      return []; // Return empty list if data is null or not a map
+    }
+  } catch (e) {
+    // Error handling
+    print('Error fetching todos: $e');
+    return []; // Return empty list on error
+  }
 }
 
 // Firebase'ga yangi todo yaratish (CREATE)

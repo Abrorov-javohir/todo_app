@@ -1,6 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 class Todo {
   String id;
   String title;
@@ -28,19 +25,15 @@ class Todo {
 
   // Todo obyektidan Map yaratish
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'id': id,
       'title': title,
       'DATETIME': dateTime
-          .toString(), // DateTime ni String ga aylantirish (ISO formatda)
+          .toIso8601String(), // DateTime ni String ga aylantirish (ISO formatda)
       'isDone': isDone,
     };
   }
 
   // JSON formatga aylantirish
-  String toJson() => json.encode(toMap());
 
-  // JSON'dan Todo obyektini yaratish
-  factory Todo.fromJson(String source) =>
-      Todo.fromMap(json.decode(source) as Map<String, dynamic>);
 }
